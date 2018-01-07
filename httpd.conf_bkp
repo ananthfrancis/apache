@@ -1,0 +1,27 @@
+Listen 8080
+LoadModule proxy_module      modules/mod_proxy.so
+LoadModule proxy_http_module modules/mod_proxy_http.so
+LoadModule headers_module    modules/mod_headers.so
+LoadFile   /usr/lib/libxml2.so
+LoadModule proxy_html_module modules/mod_proxy_html.so
+LoadModule xml2enc_module modules/mod_xml2enc.so
+
+ProxyRequests off
+ProxyPass /app1/ http://google.com
+ProxyPass /app2/ http://google.com
+ProxyHTMLURLMap http://google.com /app1
+ProxyHTMLURLMap http://google.com /app2
+
+<Location /app1/>
+        ProxyPassReverse /
+        ProxyHTMLEnable On
+        ProxyHTMLURLMap  /      /app1/
+        RequestHeader    unset  Accept-Encoding
+</Location>
+
+<Location /app2/>
+        ProxyPassReverse /
+        ProxyHTMLEnable On
+        ProxyHTMLURLMap /       /app2/
+        RequestHeader   unset   Accept-Encoding
+</Location>
